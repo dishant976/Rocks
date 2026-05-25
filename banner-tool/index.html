@@ -3,95 +3,170 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rockateral • X Banner Generator</title>
+    <title>ROCKATERAL • X Banner Generator</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <style>
-        body { background: #0f0f0f; color: #e0e0e0; }
-        .x-banner {
-            width: 1500px; height: 500px;
-            position: relative; overflow: hidden;
-            border: 8px solid #00ff9d;
-            box-shadow: 0 0 0 8px #000;
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&amp;display=swap');
+        
+        body {
+            background: #0a0a0f;
+            color: #e0e0e0;
         }
-        .stat-pill { background: rgba(0,0,0,0.6); border: 3px solid #00ff9d; }
-        .texture-btn { transition: all 0.2s; }
-        .texture-btn.active { border-color: #00ff9d; box-shadow: 0 0 0 3px #00ff9d; }
+        
+        .pixel-font {
+            font-family: "Press Start 2P", system-ui;
+        }
+
+        .x-banner {
+            width: 1500px;
+            height: 500px;
+            border: 8px solid #00ff9d;
+            box-shadow: 0 0 0 8px #000000,
+                        0 0 30px rgba(0, 255, 157, 0.3);
+            image-rendering: crisp-edges;
+        }
+
+        .cyberpunk-bg {
+            background: linear-gradient(135deg, #0f0f1a 0%, #1a0f2e 100%);
+        }
+
+        .neon-text {
+            text-shadow: 0 0 10px #00ff9d,
+                        0 0 20px #00ff9d;
+        }
+
+        .stat-pill {
+            background: rgba(0, 0, 0, 0.7);
+            border: 3px solid #00ff9d;
+            box-shadow: 0 0 10px rgba(0, 255, 157, 0.2);
+        }
+
+        .section-header {
+            font-family: "Press Start 2P", system-ui;
+            letter-spacing: 2px;
+        }
+
+        .trait {
+            font-size: 13px;
+            padding: 2px 8px;
+            background: rgba(0, 255, 157, 0.1);
+            border: 1px solid #00ff9d;
+            border-radius: 4px;
+        }
     </style>
 </head>
-<body>
+<body class="bg-[#0a0a0f]">
     <div class="max-w-7xl mx-auto px-6 py-8">
-        <h1 class="text-4xl font-bold mb-8">ROCKATERAL • X Banner Generator</h1>
-
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            
-            <!-- Live Stats -->
-            <div class="bg-zinc-900 p-6 rounded-3xl">
-                <h2 class="text-xl mb-4">Live Collection Stats</h2>
-                <div id="stats-grid" class="grid grid-cols-2 gap-3"></div>
+        
+        <!-- Header -->
+        <div class="flex items-center justify-between mb-8">
+            <div>
+                <h1 class="text-5xl font-black tracking-tighter pixel-font">ROCKATERAL</h1>
+                <p class="text-[#00ff9d] text-sm tracking-[4px] mt-1">X BANNER GENERATOR</p>
             </div>
+            <div class="flex items-center gap-x-2 text-sm">
+                <div class="px-4 py-1 bg-zinc-900 rounded-full flex items-center gap-x-2 border border-[#00ff9d]/30">
+                    <i class="fa-solid fa-satellite text-[#00ff9d]"></i>
+                    <span>ON-CHAIN VERIFIED</span>
+                </div>
+            </div>
+        </div>
 
-            <!-- Wallet Personalization -->
-            <div class="bg-zinc-900 p-6 rounded-3xl">
-                <h2 class="text-xl mb-4">Personalize with Wallet (Option B)</h2>
+        <div class="grid grid-cols-1 xl:grid-cols-12 gap-8">
+            
+            <!-- Left Sidebar: Stats + Wallet -->
+            <div class="xl:col-span-4 space-y-6">
                 
-                <div class="mb-4">
-                    <label class="text-sm">Wallet Address</label>
-                    <div class="flex gap-2 mt-1">
-                        <input id="wallet-input" type="text" placeholder="0x..."
-                               class="flex-1 bg-black border border-white/20 px-4 py-2 rounded-2xl text-sm">
-                        <button onclick="fetchWalletHoldings()"
-                                class="px-6 bg-[#00ff9d] text-black rounded-2xl font-bold">Fetch</button>
+                <!-- Live Stats -->
+                <div class="bg-zinc-900 border border-white/10 rounded-3xl p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="section-header text-sm tracking-widest">LIVE STATS</h3>
+                        <i class="fa-solid fa-sync text-xs text-[#00ff9d]"></i>
+                    </div>
+                    <div id="stats-grid" class="grid grid-cols-2 gap-3"></div>
+                </div>
+
+                <!-- Wallet Section -->
+                <div class="bg-zinc-900 border border-white/10 rounded-3xl p-6">
+                    <h3 class="section-header text-sm tracking-widest mb-4">PERSONALIZE</h3>
+                    
+                    <div class="space-y-4">
+                        <div>
+                            <label class="text-xs text-zinc-400">WALLET ADDRESS</label>
+                            <div class="flex gap-2 mt-1">
+                                <input id="wallet-input" type="text" placeholder="0x..."
+                                       class="flex-1 bg-black border border-white/20 px-4 py-2.5 rounded-2xl text-sm">
+                                <button onclick="fetchWalletHoldings()"
+                                        class="px-5 bg-[#00ff9d] hover:bg-emerald-400 transition-colors text-black rounded-2xl font-bold text-sm">FETCH</button>
+                            </div>
+                        </div>
+
+                        <div id="wallet-info" class="hidden">
+                            <div class="text-sm">
+                                <span class="text-emerald-400">Holds</span> 
+                                <span id="wallet-balance" class="font-bold text-2xl"></span> 
+                                <span class="text-zinc-400">Rocks</span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="text-xs text-zinc-400">FEATURE TOKEN ID</label>
+                            <input id="token-id-input" type="number" placeholder="e.g. 19"
+                                   class="w-full bg-black border border-white/20 px-4 py-2.5 rounded-2xl text-sm mt-1"
+                                   oninput="updateBannerPreview()">
+                        </div>
                     </div>
                 </div>
 
-                <div id="wallet-info" class="mb-4 text-sm hidden">
-                    <span class="text-emerald-400">Holds: </span>
-                    <span id="wallet-balance" class="font-bold text-2xl"></span> Rocks
-                </div>
-
-                <div class="mb-4">
-                    <label class="text-sm">Feature Specific Token ID (Optional)</label>
-                    <input id="token-id-input" type="number" placeholder="e.g. 4521"
-                           class="w-full bg-black border border-white/20 px-4 py-2 rounded-2xl text-sm mt-1"
-                           oninput="updateBannerPreview()">
-                </div>
-
                 <!-- Textures -->
-                <div>
-                    <label class="text-sm block mb-2">Choose Background Texture</label>
+                <div class="bg-zinc-900 border border-white/10 rounded-3xl p-6">
+                    <h3 class="section-header text-sm tracking-widest mb-3">BACKGROUND</h3>
                     <div class="flex flex-wrap gap-2" id="texture-buttons"></div>
                 </div>
             </div>
-        </div>
 
-        <!-- Banner Preview -->
-        <div class="mt-10">
-            <h3 class="mb-3 text-sm tracking-widest">LIVE BANNER PREVIEW (1500×500)</h3>
-            <div id="banner-preview" class="x-banner mx-auto rounded-2xl flex flex-col justify-between p-8 text-white"
-                 style="background: #1a1a2e; max-width: 100%; transform: scale(0.82); transform-origin: top;">
+            <!-- Banner Preview (Bigger) -->
+            <div class="xl:col-span-8">
+                <div class="flex items-center justify-between mb-3 px-1">
+                    <div>
+                        <span class="text-sm tracking-[2px] text-zinc-400">PREVIEW</span>
+                    </div>
+                    <div class="text-xs px-3 py-1 bg-zinc-900 rounded-full">1500 × 500 PX</div>
+                </div>
+                
+                <div id="banner-preview" 
+                     class="x-banner mx-auto rounded-2xl flex items-center justify-center text-white relative overflow-hidden"
+                     style="background: #1a1a2e; max-width: 100%; box-shadow: 0 25px 50px -12px rgb(0 0 0);">
+                </div>
+
+                <div class="flex justify-center gap-4 mt-6">
+                    <button onclick="downloadBanner()"
+                            class="flex items-center gap-x-3 px-8 py-3.5 bg-[#00ff9d] hover:bg-emerald-400 transition-all text-black rounded-3xl font-bold">
+                        <i class="fa-solid fa-download"></i>
+                        <span>DOWNLOAD PNG</span>
+                    </button>
+                    
+                    <button onclick="copyPromptForAI()"
+                            class="flex items-center gap-x-3 px-6 py-3.5 border border-white/30 hover:bg-white/5 rounded-3xl text-sm">
+                        <i class="fa-solid fa-magic"></i>
+                        <span>AI PROMPT</span>
+                    </button>
+                </div>
             </div>
-        </div>
-
-        <div class="flex gap-4 mt-6">
-            <button onclick="downloadBanner()"
-                    class="flex-1 bg-[#00ff9d] text-black py-4 rounded-3xl font-bold">Download PNG</button>
-            <button onclick="copyPromptForAI()"
-                    class="px-8 border border-white/30 rounded-3xl">Copy AI Prompt</button>
         </div>
     </div>
 
     <script>
-        // ✅ Correct Vercel URL
         const API_BASE = "https://rocks-ruby.vercel.app";
 
         let currentStats = null;
-        let selectedTexture = "moon";
+        let selectedTexture = "saturn";
         let currentWallet = null;
 
         const textures = [
-            { id: "moon", name: "Moon Surface", color: "#4a4a4a" },
+            { id: "moon", name: "Moon", color: "#4a4a4a" },
             { id: "mars", name: "Mars", color: "#b85c38" },
             { id: "earth", name: "Earth", color: "#1e3a5f" },
             { id: "saturn", name: "Saturn", color: "#c5a26f" },
@@ -99,16 +174,13 @@
             { id: "deep", name: "Deep Space", color: "#0a0a1f" }
         ];
 
-        // Fetch Collection Stats
         async function fetchStats() {
             try {
                 const res = await fetch(`${API_BASE}/api/rockateral/stats`);
                 const json = await res.json();
                 currentStats = json.data;
                 renderStats();
-            } catch (error) {
-                console.error("Failed to fetch stats:", error);
-            }
+            } catch (e) {}
         }
 
         function renderStats() {
@@ -117,47 +189,38 @@
 
             grid.innerHTML = `
                 <div class="stat-pill p-4 rounded-2xl">
-                    <div class="text-xs">MAX SUPPLY</div>
-                    <div class="text-3xl font-bold">${currentStats.max_supply}</div>
+                    <div class="text-[10px] text-zinc-400">MAX SUPPLY</div>
+                    <div class="text-4xl font-black">${currentStats.max_supply}</div>
                 </div>
-                <div class="stat-pill p-4 rounded-2xl">
-                    <div class="text-xs text-orange-400">BURNED</div>
-                    <div class="text-3xl font-bold">${currentStats.burned}</div>
+                <div class="stat-pill p-4 rounded-2xl border-orange-500">
+                    <div class="text-[10px] text-orange-400">BURNED</div>
+                    <div class="text-4xl font-black text-orange-400">${currentStats.burned}</div>
                 </div>
             `;
         }
 
-        // Fetch Wallet Holdings
         async function fetchWalletHoldings() {
             const wallet = document.getElementById('wallet-input').value.trim();
-            if (!wallet) return alert("Please enter a wallet address");
+            if (!wallet) return;
 
             try {
                 const res = await fetch(`${API_BASE}/api/rockateral/wallet/${wallet}`);
                 const data = await res.json();
-
                 if (data.success) {
                     document.getElementById('wallet-info').classList.remove('hidden');
                     document.getElementById('wallet-balance').innerText = data.rockateral_balance;
                     currentWallet = wallet;
                     updateBannerPreview();
-                } else {
-                    alert("Error: " + (data.detail || "Failed to fetch wallet"));
                 }
-            } catch (error) {
-                console.error(error);
-                alert("Failed to fetch wallet data");
-            }
+            } catch (e) {}
         }
 
-        // Create Texture Buttons
         function createTextureButtons() {
             const container = document.getElementById('texture-buttons');
             container.innerHTML = '';
-
             textures.forEach(tex => {
                 const btn = document.createElement('button');
-                btn.className = `texture-btn px-4 py-2 text-sm rounded-2xl border border-white/20`;
+                btn.className = `texture-btn px-4 py-1.5 text-xs rounded-2xl border border-white/20`;
                 btn.innerText = tex.name;
                 btn.onclick = () => {
                     selectedTexture = tex.id;
@@ -169,27 +232,30 @@
             });
         }
 
-        // Update Banner Preview
         function updateBannerPreview() {
             const banner = document.getElementById('banner-preview');
             const tokenId = document.getElementById('token-id-input').value;
-            const walletShort = currentWallet ? currentWallet.slice(0, 6) + '...' + currentWallet.slice(-4) : '';
+            const walletShort = currentWallet ? currentWallet.slice(0,6) + '...' + currentWallet.slice(-4) : '';
 
             let bgColor = "#1a1a2e";
-            textures.forEach(t => {
-                if (t.id === selectedTexture) bgColor = t.color;
-            });
+            textures.forEach(t => { if (t.id === selectedTexture) bgColor = t.color; });
 
             banner.style.background = bgColor;
 
             banner.innerHTML = `
-                <div class="flex justify-between items-start">
+                <div class="w-full h-full flex flex-col justify-between p-10 relative">
                     <div>
-                        <div class="text-5xl font-black tracking-tight">ROCKATERAL</div>
-                        ${tokenId ? `<div class="text-2xl mt-1">#${tokenId}</div>` : ''}
+                        <div class="text-[72px] font-black tracking-[-4px] leading-none">ROCKATERAL</div>
+                        ${tokenId ? `<div class="text-4xl mt-2">#${tokenId}</div>` : ''}
                     </div>
-                    <div class="text-right text-sm">
-                        ${walletShort ? walletShort : ''}
+                    
+                    <div class="flex justify-between items-end">
+                        <div class="text-sm opacity-70">
+                            ${walletShort ? walletShort : 'PIXEL ROCKS ON ETHEREUM'}
+                        </div>
+                        <div class="text-right">
+                            <div class="text-xs opacity-60">CYBERPUNK • 2026</div>
+                        </div>
                     </div>
                 </div>
             `;
@@ -200,25 +266,24 @@
             const canvas = await html2canvas(banner, { scale: 1.5 });
             const link = document.createElement('a');
             link.download = `rockateral-x-banner.png`;
-            link.href = canvas.toDataURL('image/png');
+            link.href = canvas.toDataURL();
             link.click();
         }
 
         function copyPromptForAI() {
-            alert("AI prompt feature coming soon!");
+            alert("Coming soon!");
         }
 
         function init() {
             fetchStats();
             createTextureButtons();
+            updateBannerPreview();
 
-            // Set default texture
             setTimeout(() => {
-                const firstBtn = document.querySelector('.texture-btn');
-                if (firstBtn) firstBtn.classList.add('active');
-            }, 300);
+                const saturnBtn = Array.from(document.querySelectorAll('.texture-btn')).find(b => b.innerText === 'Saturn');
+                if (saturnBtn) saturnBtn.classList.add('active');
+            }, 400);
 
-            // Live update on token ID change
             document.getElementById('token-id-input').addEventListener('input', updateBannerPreview);
         }
 
