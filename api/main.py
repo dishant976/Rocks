@@ -131,7 +131,7 @@ async def get_rockateral_stats(force_refresh: bool = Query(False)):
     return response
 
 
-# ==================== WALLET HOLDINGS (NEW) ====================
+# ==================== WALLET HOLDINGS ====================
 @app.get("/api/rockateral/wallet/{wallet_address}")
 async def get_wallet_holdings(wallet_address: str):
     w3 = get_web3()
@@ -159,4 +159,14 @@ async def health_check():
 
 @app.get("/")
 async def root():
-    return {"message": "Rockateral Public API is live 🪨🔥", "docs": "/docs"}
+    return {
+        "message": "Rockateral Public API is live 🪨🔥",
+        "docs": "/docs",
+        "stats_endpoint": "/api/rockateral/stats",
+        "health": "/api/rockateral/health"
+    }
+
+
+# ==================== VERCEL COMPATIBILITY ====================
+# Required for Vercel serverless deployment
+app = app
