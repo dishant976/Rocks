@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rockateral • X Banner Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <style>
+        body { background: #0f0f0f; color: #e0e0e0; }
+        .pixel-font { font-family: "Press Start 2P", system-ui; }
+        .x-banner {
+            width: 1500px; height: 500px;
+            position: relative; overflow: hidden;
+            border: 8px solid #00ff9d;
+            box-shadow: 0 0 0 8px #000;
+        }
+        .stat-pill { background: rgba(0,0,0,0.6); border: 3px solid #00ff9d; }
+        .texture-btn { transition: all 0.2s; }
+        .texture-btn.active { border-color: #00ff9d; box-shadow: 0 0 0 3px #00ff9d; }
+    </style>
+</head>
+<body>
+    <div class="max-w-7xl mx-auto px-6 py-8">
+        <h1 class="text-4xl font-bold mb-8">ROCKATERAL • X Banner Generator</h1>
+
+        <!-- LIVE STATS -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Stats Panel -->
+            <div class="bg-zinc-900 p-6 rounded-3xl">
+                <h2 class="text-xl mb-4">Live Collection Stats</h2>
+                <div id="stats-grid" class="grid grid-cols-2 gap-3"></div>
+            </div>
+
+            <!-- Wallet + Personalization -->
+            <div class="bg-zinc-900 p-6 rounded-3xl">
+                <h2 class="text-xl mb-4">Personalize with Wallet (Option B)</h2>
+                
+                <div class="mb-4">
+                    <label class="text-sm">Wallet Address</label>
+                    <div class="flex gap-2 mt-1">
+                        <input id="wallet-input" type="text" placeholder="0x..." 
+                               class="flex-1 bg-black border border-white/20 px-4 py-2 rounded-2xl text-sm">
+                        <button onclick="fetchWalletHoldings()" 
+                                class="px-6 bg-[#00ff9d] text-black rounded-2xl font-bold">Fetch</button>
+                    </div>
+                </div>
+
+                <div id="wallet-info" class="mb-4 text-sm hidden">
+                    <span class="text-emerald-400">Holds: </span>
+                    <span id="wallet-balance" class="font-bold text-2xl"></span> Rocks
+                </div>
+
+                <div class="mb-4">
+                    <label class="text-sm">Feature Specific Token ID (Optional)</label>
+                    <input id="token-id-input" type="number" placeholder="e.g. 4521"
+                           class="w-full bg-black border border-white/20 px-4 py-2 rounded-2xl text-sm mt-1"
+                           oninput="updateBannerPreview()">
+                </div>
+
+                <!-- Planetary Textures -->
+                <div>
+                    <label class="text-sm block mb-2">Choose Background Texture</label>
+                    <div class="flex flex-wrap gap-2" id="texture-buttons">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Banner Preview -->
+        <div class="mt-10">
+            <h3 class="mb-3 text-sm tracking-widest">LIVE BANNER PREVIEW (1500×500)</h3>
+            <div id="banner-preview" class="x-banner mx-auto rounded-2xl flex flex-col justify-between p-8 text-white"
+                 style="background: #1a1a2e; max-width: 100%; transform: scale(0.82); transform-origin: top;">
+                <!-- Dynamic content populated by JS -->
+            </div>
+        </div>
+
+        <div class="flex gap-4 mt-6">
+            <button onclick="downloadBanner()" 
+                    class="flex-1 bg-[#00ff9d] text-black py-4 rounded-3xl font-bold">Download PNG</button>
+            <button onclick="copyPromptForAI()" 
+                    class="px-8 border border-white/30 rounded-3xl">Copy AI Prompt</button>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = "https://YOUR-RAILWAY-URL.up.railway.app"; // ← CHANGE THIS
+
+        let currentStats = null;
+        let selectedTexture = "moon";
+
+        const textures = [
+            { id: "moon", name: "Moon Surface", color: "#4a4a4a" },
+            { id: "mars", name: "Mars", color: "#b85c38" },
+            { id: "earth", name: "Earth", color: "#1e3a5f" },
+            { id: "saturn", name: "Saturn", color: "#c5a26f" },
+            { id: "jupiter", name: "Jupiter", color: "#b07d3e" },
+            { id: "deep", name: "Deep Space", color: "#0a0a1f" }
+        ];
+
+        async function fetchStats() {
+            const res = await fetch(`${API_BASE}/api/rockateral/stats`);
+            const json = await res.json();
+            currentStats = json.data;
+            renderStats();
+        }
+
+        function renderStats() {
+            const grid = document.getElementById('stats-grid');
+            if (!currentStats) return;
+            grid.innerHTML = `
+                <div class="stat-pill p-4 rounded-2xl"><div class="text-xs">MAX SUPPLY</div><div class="text-3xl font-bold">${currentStats.max_supply}</div></div>
+                <div class="stat-pill p-4 rounded-2xl"><div class="text-xs text-orange-400">BURNED</div><div class="text-3xl font-bold">${currentStats.burned}</div></div>
+            `;
+        }
+
+        async function fetchWalletHoldings() {
+            const wallet = document.getElementById('wallet-input').value.trim();
+            if (!wallet) return alert("Enter wallet address");
+
+            const res = await fetch(`${API_BASE}/api/rockateral/wallet/${wallet}`);
+            const data = await res.json();
+
+            if (data.success) {
+                document.getElementById('wallet-info').classList.remove('hidden');
+                document.getElementById('wallet-balance').innerText = data.rockateral_balance;
+                window.currentWallet = wallet;
+                updateBannerPreview();
+            } else {
+                alert("Error: " + data.detail);
+            }
+        }
+
+        function createTextureButtons() {
+            const container = document.getElementById('texture-buttons');
+            container.innerHTML = '';
+            textures.forEach(tex => {
+                const btn = document.createElement('button');
+                btn.className = `texture-btn px-4 py-2 text-sm rounded-2xl border border-white/20`;
+                btn.innerText = tex.name;
+                btn.onclick = () => {
+                    selectedTexture = tex.id;
+                    document.querySelectorAll('.texture-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    updateBannerPreview();
+                };
+                container.appendChild(btn);
+            });
+        }
+
+        function updateBannerPreview() {
+            const banner = document.getElementById('banner-preview');
+            const tokenId = document.getElementById('token-id-input').value;
+            const wallet = window.currentWallet || '';
+
+            let bgColor = "#1a1a2e";
+            textures.forEach(t => { if (t.id === selectedTexture) bgColor = t.color; });
+
+            banner.style.background = bgColor;
+
+            let html = `
+                <div class="flex justify-between">
+                    <div>
+                        <div class="text-5xl font-black">ROCKATERAL</div>
+                        ${tokenId ? `<div class="text-2xl mt-1">#${tokenId}</div>` : ''}
+                    </div>
+                    <div class="text-right text-sm">
+                        ${wallet ? wallet.slice(0,6) + '...' + wallet.slice(-4) : ''}
+                    </div>
+                </div>
+            `;
+            banner.innerHTML = html;
+        }
+
+        async function downloadBanner() {
+            const banner = document.getElementById('banner-preview');
+            const canvas = await html2canvas(banner, { scale: 1.5 });
+            const link = document.createElement('a');
+            link.download = `rockateral-banner.png`;
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+
+        function copyPromptForAI() {
+            const tokenId = document.getElementById('token-id-input').value;
+            alert("AI prompt copied! (Feature coming soon)");
+        }
+
+        function init() {
+            fetchStats();
+            createTextureButtons();
+            
+            // Set default texture active
+            setTimeout(() => {
+                const firstBtn = document.querySelector('.texture-btn');
+                if (firstBtn) firstBtn.classList.add('active');
+            }, 300);
+
+            // Live update when typing token ID
+            document.getElementById('token-id-input').addEventListener('input', updateBannerPreview);
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
