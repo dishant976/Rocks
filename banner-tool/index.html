@@ -1,293 +1,1174 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ROCKATERAL • X Banner Generator</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&amp;display=swap');
-        
-        body {
-            background: #0a0a0f;
-            color: #e0e0e0;
-        }
-        
-        .pixel-font {
-            font-family: "Press Start 2P", system-ui;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ROCKATERAL — X BANNER FORGE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Black+Ops+One&family=Share+Tech+Mono&family=Unbounded:wght@300;700;900&family=VT323&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
 
-        .x-banner {
-            width: 1500px;
-            height: 500px;
-            border: 8px solid #00ff9d;
-            box-shadow: 0 0 0 8px #000000,
-                        0 0 30px rgba(0, 255, 157, 0.3);
-            image-rendering: crisp-edges;
-        }
+<style>
+:root {
+  --neon-green:   #39ff14;
+  --acid-yellow:  #f5f500;
+  --lava-orange:  #ff6b00;
+  --deep-red:     #c0392b;
+  --plasma-blue:  #00d4ff;
+  --void:         #080810;
+  --ink:          #0d0d18;
+  --panel:        #111120;
+  --border:       rgba(57,255,20,0.25);
+  --text:         #e8e8d0;
+  --muted:        #5a5a72;
+}
 
-        .cyberpunk-bg {
-            background: linear-gradient(135deg, #0f0f1a 0%, #1a0f2e 100%);
-        }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        .neon-text {
-            text-shadow: 0 0 10px #00ff9d,
-                        0 0 20px #00ff9d;
-        }
+html { scroll-behavior: smooth; }
 
-        .stat-pill {
-            background: rgba(0, 0, 0, 0.7);
-            border: 3px solid #00ff9d;
-            box-shadow: 0 0 10px rgba(0, 255, 157, 0.2);
-        }
+body {
+  background: var(--void);
+  color: var(--text);
+  font-family: 'Share Tech Mono', monospace;
+  min-height: 100vh;
+  overflow-x: hidden;
+  cursor: crosshair;
+}
 
-        .section-header {
-            font-family: "Press Start 2P", system-ui;
-            letter-spacing: 2px;
-        }
+/* ─── SCAN LINE OVERLAY ─── */
+body::before {
+  content:'';
+  position:fixed;
+  inset:0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.08) 2px,
+    rgba(0,0,0,0.08) 4px
+  );
+  pointer-events:none;
+  z-index:9999;
+}
 
-        .trait {
-            font-size: 13px;
-            padding: 2px 8px;
-            background: rgba(0, 255, 157, 0.1);
-            border: 1px solid #00ff9d;
-            border-radius: 4px;
-        }
-    </style>
+/* ─── GRID BG ─── */
+body::after {
+  content:'';
+  position:fixed;
+  inset:0;
+  background-image:
+    linear-gradient(rgba(57,255,20,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(57,255,20,0.03) 1px, transparent 1px);
+  background-size:40px 40px;
+  pointer-events:none;
+  z-index:0;
+}
+
+.wrap { position:relative; z-index:1; max-width:1380px; margin:0 auto; padding:24px 20px; }
+
+/* ─── HEADER ─── */
+.site-header {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 20px;
+  margin-bottom: 32px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.logo-group { display:flex; flex-direction:column; gap:4px; }
+
+.logo-main {
+  font-family: 'Unbounded', sans-serif;
+  font-weight: 900;
+  font-size: clamp(28px, 5vw, 56px);
+  letter-spacing: -2px;
+  line-height: 1;
+  color: var(--neon-green);
+  text-shadow: 0 0 40px rgba(57,255,20,0.4), 0 0 80px rgba(57,255,20,0.15);
+}
+
+.logo-sub {
+  font-family: 'VT323', monospace;
+  font-size: 18px;
+  color: var(--lava-orange);
+  letter-spacing: 4px;
+}
+
+.header-badges { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+
+.badge {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  padding: 5px 12px;
+  border: 1px solid;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.badge-green { border-color: var(--neon-green); color: var(--neon-green); }
+.badge-orange { border-color: var(--lava-orange); color: var(--lava-orange); }
+.badge-blue { border-color: var(--plasma-blue); color: var(--plasma-blue); }
+
+/* ─── TRAIT TICKER ─── */
+.trait-ticker {
+  overflow: hidden;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 8px 0;
+  margin-bottom: 32px;
+  white-space: nowrap;
+}
+
+.ticker-track {
+  display: inline-block;
+  animation: tick 30s linear infinite;
+  font-family: 'VT323', monospace;
+  font-size: 20px;
+  color: var(--acid-yellow);
+  letter-spacing: 3px;
+}
+.ticker-track span { margin: 0 32px; }
+.ticker-track .sep { color: var(--lava-orange); }
+
+@keyframes tick { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+/* ─── LIVE STATS BAR ─── */
+.stats-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.stat-block {
+  border: 1px solid var(--border);
+  padding: 16px;
+  background: var(--panel);
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+.stat-block::before {
+  content:'';
+  position:absolute;
+  top:0; left:0; right:0;
+  height:2px;
+  background: var(--neon-green);
+  opacity: 0.6;
+}
+.stat-block:hover { border-color: var(--neon-green); }
+
+.stat-label {
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+.stat-value {
+  font-family: 'Unbounded', sans-serif;
+  font-weight: 900;
+  font-size: 28px;
+  color: var(--neon-green);
+  line-height: 1;
+}
+.stat-value.burned { color: var(--lava-orange); }
+.stat-sub { font-size: 9px; color: var(--muted); margin-top:4px; }
+
+/* ─── MAIN LAYOUT ─── */
+.main-grid {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+@media (max-width: 900px) { .main-grid { grid-template-columns: 1fr; } }
+
+/* ─── SIDEBAR PANELS ─── */
+.panel {
+  border: 1px solid var(--border);
+  background: var(--panel);
+  padding: 20px;
+  margin-bottom: 14px;
+}
+
+.panel-title {
+  font-family: 'VT323', monospace;
+  font-size: 22px;
+  color: var(--neon-green);
+  letter-spacing: 3px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.panel-title::before {
+  content: '▶';
+  font-size: 12px;
+  color: var(--lava-orange);
+}
+
+label {
+  display: block;
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: var(--muted);
+  margin-bottom: 5px;
+  text-transform: uppercase;
+}
+
+input[type="text"], input[type="number"] {
+  width: 100%;
+  background: var(--void);
+  border: 1px solid rgba(57,255,20,0.2);
+  color: var(--neon-green);
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 13px;
+  padding: 10px 12px;
+  outline: none;
+  transition: border-color 0.2s;
+  margin-bottom: 12px;
+}
+input:focus { border-color: var(--neon-green); box-shadow: 0 0 12px rgba(57,255,20,0.15); }
+input::placeholder { color: var(--muted); }
+
+.btn {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 2px;
+  padding: 10px 18px;
+  border: 1px solid;
+  background: transparent;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: all 0.15s;
+}
+.btn-green { border-color: var(--neon-green); color: var(--neon-green); }
+.btn-green:hover { background: var(--neon-green); color: var(--void); }
+.btn-orange { border-color: var(--lava-orange); color: var(--lava-orange); }
+.btn-orange:hover { background: var(--lava-orange); color: var(--void); }
+.btn-blue { border-color: var(--plasma-blue); color: var(--plasma-blue); }
+.btn-blue:hover { background: var(--plasma-blue); color: var(--void); }
+.btn-row { display:flex; gap:8px; flex-wrap:wrap; }
+
+.wallet-result {
+  display: none;
+  background: rgba(57,255,20,0.05);
+  border: 1px solid rgba(57,255,20,0.3);
+  padding: 12px;
+  margin-bottom: 12px;
+  font-size: 12px;
+}
+.wallet-result.show { display: block; }
+.wallet-result .big { font-family:'Unbounded',sans-serif; font-size:28px; color:var(--neon-green); font-weight:900; }
+
+/* ─── PLANET SELECTOR ─── */
+.planet-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.planet-btn {
+  aspect-ratio: 1;
+  border: 2px solid rgba(255,255,255,0.1);
+  background: var(--void);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.2s, transform 0.15s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.planet-btn:hover { border-color: rgba(57,255,20,0.5); transform: scale(1.04); }
+.planet-btn.active { border-color: var(--neon-green); box-shadow: 0 0 16px rgba(57,255,20,0.3); }
+.planet-btn .planet-orb {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  display: block;
+}
+.planet-btn .planet-name {
+  font-family: 'VT323', monospace;
+  font-size: 13px;
+  letter-spacing: 2px;
+  color: var(--text);
+}
+
+/* ─── TRAIT CHIPS ─── */
+.trait-section { margin-bottom: 4px; }
+.trait-section-name { font-size:9px; letter-spacing:2px; color:var(--lava-orange); margin-bottom:6px; }
+.trait-chips { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:12px; }
+.trait-chip {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px;
+  padding: 4px 10px;
+  border: 1px solid rgba(255,255,255,0.12);
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.15s;
+  letter-spacing: 1px;
+}
+.trait-chip:hover { border-color: var(--neon-green); color: var(--neon-green); }
+.trait-chip.active { border-color: var(--neon-green); color: var(--void); background: var(--neon-green); }
+
+/* ─── BANNER PREVIEW ─── */
+.banner-wrap {
+  position: sticky;
+  top: 20px;
+}
+
+.banner-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+.banner-meta-label { font-size: 9px; letter-spacing: 3px; color: var(--muted); }
+.banner-meta-size { font-family: 'VT323', monospace; font-size: 18px; color: var(--lava-orange); }
+
+.banner-outer {
+  border: 1px solid var(--border);
+  padding: 8px;
+  background: #050508;
+  position: relative;
+}
+
+/* THE ACTUAL BANNER CANVAS */
+#banner-canvas {
+  width: 100%;
+  aspect-ratio: 3 / 1;
+  position: relative;
+  overflow: hidden;
+  display: block;
+  /* actual px: 1500x500 for export */
+}
+
+/* corner decorations on banner-outer */
+.corner { position:absolute; width:14px; height:14px; z-index:10; }
+.corner.tl { top:0; left:0; border-top:2px solid var(--neon-green); border-left:2px solid var(--neon-green); }
+.corner.tr { top:0; right:0; border-top:2px solid var(--neon-green); border-right:2px solid var(--neon-green); }
+.corner.bl { bottom:0; left:0; border-bottom:2px solid var(--neon-green); border-left:2px solid var(--neon-green); }
+.corner.br { bottom:0; right:0; border-bottom:2px solid var(--neon-green); border-right:2px solid var(--neon-green); }
+
+/* ─── BANNER INTERNALS ─── */
+.ban-bg {
+  position:absolute; inset:0;
+  transition: background 0.5s;
+}
+
+.ban-scanlines {
+  position:absolute; inset:0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 3px,
+    rgba(0,0,0,0.12) 3px,
+    rgba(0,0,0,0.12) 6px
+  );
+  pointer-events:none;
+}
+
+.ban-grid {
+  position:absolute; inset:0;
+  opacity:0.12;
+  pointer-events:none;
+}
+
+.ban-content {
+  position:absolute; inset:0;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  padding: clamp(14px,3%,30px) clamp(18px,4%,42px);
+}
+
+.ban-top { display:flex; justify-content:space-between; align-items:flex-start; }
+.ban-bottom { display:flex; justify-content:space-between; align-items:flex-end; }
+
+.ban-title {
+  font-family: 'Unbounded', sans-serif;
+  font-weight: 900;
+  font-size: clamp(20px, 4.5vw, 52px);
+  letter-spacing: -1px;
+  line-height: 1;
+  color: #fff;
+  text-shadow: 0 0 30px rgba(57,255,20,0.6);
+}
+
+.ban-token {
+  font-family: 'VT323', monospace;
+  font-size: clamp(14px, 2.5vw, 28px);
+  color: var(--acid-yellow);
+  letter-spacing: 3px;
+}
+
+.ban-neon-bar {
+  height: 3px;
+  background: linear-gradient(90deg, var(--neon-green), var(--plasma-blue), var(--neon-green));
+  margin: 6px 0;
+  animation: neon-slide 3s linear infinite;
+  background-size: 200%;
+}
+@keyframes neon-slide { from{background-position:0%} to{background-position:200%} }
+
+.ban-traits {
+  display:flex;
+  flex-wrap:wrap;
+  gap: 5px;
+}
+.ban-trait-pill {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: clamp(7px,1vw,10px);
+  padding: 2px 8px;
+  border: 1px solid rgba(57,255,20,0.5);
+  color: var(--neon-green);
+  background: rgba(57,255,20,0.08);
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+
+.ban-stats-box {
+  text-align:right;
+}
+.ban-stat-row {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: clamp(8px, 1vw, 11px);
+  color: rgba(255,255,255,0.7);
+  letter-spacing: 1px;
+}
+.ban-stat-row span { color: var(--neon-green); }
+
+.ban-wallet {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: clamp(7px,0.9vw,10px);
+  color: rgba(255,255,255,0.4);
+  letter-spacing: 1px;
+  margin-top:4px;
+}
+
+.ban-logo-corner {
+  font-family: 'VT323', monospace;
+  font-size: clamp(12px,1.5vw,16px);
+  color: var(--lava-orange);
+  letter-spacing: 2px;
+  opacity: 0.8;
+}
+
+/* ─── PLANET SURFACE LAYERS (CSS-drawn) ─── */
+/* Earth */
+.surface-earth .ban-bg {
+  background: radial-gradient(ellipse at 30% 50%, #1b4d8e 0%, #0e2d55 40%, #07192f 100%);
+}
+.surface-earth .planet-patch-1 {
+  position:absolute; width:40%; height:50%; top:10%; left:5%;
+  border-radius: 70% 30% 60% 40% / 50% 60% 40% 50%;
+  background: linear-gradient(135deg, #2d7a3a 0%, #1e5e28 60%, #4a9e55 100%);
+  opacity:0.7;
+}
+.surface-earth .planet-patch-2 {
+  position:absolute; width:25%; height:30%; top:50%; left:60%;
+  border-radius: 40% 60% 70% 30% / 60% 40% 50% 50%;
+  background: linear-gradient(135deg, #3d9e4a 0%, #2a6e33 100%);
+  opacity:0.65;
+}
+.surface-earth .planet-cloud {
+  position:absolute; border-radius:50%;
+  background: rgba(255,255,255,0.12);
+  filter:blur(8px);
+}
+
+/* Mars */
+.surface-mars .ban-bg {
+  background: radial-gradient(ellipse at 60% 40%, #c0543a 0%, #8b2e14 50%, #500d00 100%);
+}
+.surface-mars .crater {
+  position:absolute; border-radius:50%;
+  background: radial-gradient(circle at 35% 35%, rgba(255,150,100,0.2), rgba(80,13,0,0.6));
+  border: 1px solid rgba(255,100,60,0.2);
+}
+
+/* Moon */
+.surface-moon .ban-bg {
+  background: radial-gradient(ellipse at 40% 40%, #b0b0b0 0%, #606060 50%, #252525 100%);
+}
+.surface-moon .crater {
+  position:absolute; border-radius:50%;
+  background: radial-gradient(circle at 40% 40%, rgba(220,220,220,0.1), rgba(0,0,0,0.5));
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+/* Saturn */
+.surface-saturn .ban-bg {
+  background: linear-gradient(160deg, #c8a55a 0%, #a87d38 30%, #7a5520 60%, #4a3010 100%);
+}
+.surface-saturn .ring {
+  position:absolute;
+  border-radius:50%;
+  border: 3px solid rgba(200,165,90,0.3);
+}
+
+/* Jupiter */
+.surface-jupiter .ban-bg {
+  background: linear-gradient(180deg,
+    #c8865a 0%, #b07040 15%,
+    #d4a070 30%, #8a5030 45%,
+    #c07050 60%, #9a6040 75%,
+    #d4a060 90%, #b08050 100%);
+}
+.surface-jupiter .storm {
+  position:absolute; border-radius:50%;
+  background: radial-gradient(circle, rgba(200,100,60,0.5) 0%, transparent 70%);
+}
+
+/* Deep Space */
+.surface-space .ban-bg {
+  background: radial-gradient(ellipse at 20% 80%, #0d0020 0%, #050010 100%);
+}
+.surface-space .star { position:absolute; border-radius:50%; background:#fff; }
+
+/* Nebula */
+.surface-nebula .ban-bg {
+  background: radial-gradient(ellipse at 50% 50%, #1a0040 0%, #000520 100%);
+}
+
+/* ─── ROCK PIXEL CHARACTERS on banner ─── */
+.pixel-rock {
+  position:absolute;
+  image-rendering: pixelated;
+  pointer-events:none;
+}
+
+/* ─── DOWNLOAD AREA ─── */
+.download-area {
+  margin-top: 14px;
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+/* ─── TRAIT LEGEND ─── */
+.trait-legend {
+  margin-top: 32px;
+  border: 1px solid var(--border);
+  padding: 20px;
+  background: var(--panel);
+}
+
+.legend-title {
+  font-family: 'VT323', monospace;
+  font-size: 22px;
+  color: var(--acid-yellow);
+  letter-spacing: 3px;
+  margin-bottom: 16px;
+}
+
+.legend-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
+}
+
+.legend-card {
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 12px;
+  background: var(--void);
+  transition: border-color 0.2s;
+}
+.legend-card:hover { border-color: var(--lava-orange); }
+.legend-card-name { font-size: 9px; letter-spacing: 2px; color: var(--lava-orange); margin-bottom:6px; }
+.legend-card-values { font-family:'VT323',monospace; font-size:16px; color:var(--muted); line-height:1.6; }
+
+/* ─── FOOTER ─── */
+.site-footer {
+  margin-top: 40px;
+  border-top: 1px solid var(--border);
+  padding-top: 20px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:12px;
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 2px;
+}
+.site-footer a { color: var(--neon-green); text-decoration:none; }
+.site-footer a:hover { text-decoration:underline; }
+
+/* ─── PULSE ANIMATION ─── */
+@keyframes pulse-glow {
+  0%,100% { opacity:0.6; }
+  50% { opacity:1; }
+}
+.pulsing { animation: pulse-glow 2s ease-in-out infinite; }
+
+/* ─── GLITCH EFFECT ─── */
+@keyframes glitch {
+  0%,100% { transform:translate(0); }
+  20% { transform:translate(-2px, 1px); }
+  40% { transform:translate(2px, -1px); }
+  60% { transform:translate(-1px, 2px); }
+  80% { transform:translate(1px, -2px); }
+}
+.glitch-hover:hover { animation: glitch 0.3s; }
+</style>
 </head>
-<body class="bg-[#0a0a0f]">
-    <div class="max-w-7xl mx-auto px-6 py-8">
-        
-        <!-- Header -->
-        <div class="flex items-center justify-between mb-8">
-            <div>
-                <h1 class="text-5xl font-black tracking-tighter pixel-font">ROCKATERAL</h1>
-                <p class="text-[#00ff9d] text-sm tracking-[4px] mt-1">X BANNER GENERATOR</p>
-            </div>
-            <div class="flex items-center gap-x-2 text-sm">
-                <div class="px-4 py-1 bg-zinc-900 rounded-full flex items-center gap-x-2 border border-[#00ff9d]/30">
-                    <i class="fa-solid fa-satellite text-[#00ff9d]"></i>
-                    <span>ON-CHAIN VERIFIED</span>
-                </div>
-            </div>
-        </div>
 
-        <div class="grid grid-cols-1 xl:grid-cols-12 gap-8">
-            
-            <!-- Left Sidebar: Stats + Wallet -->
-            <div class="xl:col-span-4 space-y-6">
-                
-                <!-- Live Stats -->
-                <div class="bg-zinc-900 border border-white/10 rounded-3xl p-6">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="section-header text-sm tracking-widest">LIVE STATS</h3>
-                        <i class="fa-solid fa-sync text-xs text-[#00ff9d]"></i>
-                    </div>
-                    <div id="stats-grid" class="grid grid-cols-2 gap-3"></div>
-                </div>
+<body>
+<div class="wrap">
 
-                <!-- Wallet Section -->
-                <div class="bg-zinc-900 border border-white/10 rounded-3xl p-6">
-                    <h3 class="section-header text-sm tracking-widest mb-4">PERSONALIZE</h3>
-                    
-                    <div class="space-y-4">
-                        <div>
-                            <label class="text-xs text-zinc-400">WALLET ADDRESS</label>
-                            <div class="flex gap-2 mt-1">
-                                <input id="wallet-input" type="text" placeholder="0x..."
-                                       class="flex-1 bg-black border border-white/20 px-4 py-2.5 rounded-2xl text-sm">
-                                <button onclick="fetchWalletHoldings()"
-                                        class="px-5 bg-[#00ff9d] hover:bg-emerald-400 transition-colors text-black rounded-2xl font-bold text-sm">FETCH</button>
-                            </div>
-                        </div>
+<!-- ─── HEADER ─── -->
+<header class="site-header">
+  <div class="logo-group">
+    <div class="logo-main glitch-hover">ROCKATERAL</div>
+    <div class="logo-sub">▸ BANNER FORGE v2.0</div>
+  </div>
+  <div class="header-badges">
+    <span class="badge badge-green pulsing">⬤ LIVE ON-CHAIN</span>
+    <span class="badge badge-orange">10K PIXEL ROCKS</span>
+    <span class="badge badge-blue">ETHEREUM</span>
+    <a class="badge badge-green" href="https://opensea.io/collection/rockateral" target="_blank" style="text-decoration:none">OPENSEA ↗</a>
+  </div>
+</header>
 
-                        <div id="wallet-info" class="hidden">
-                            <div class="text-sm">
-                                <span class="text-emerald-400">Holds</span> 
-                                <span id="wallet-balance" class="font-bold text-2xl"></span> 
-                                <span class="text-zinc-400">Rocks</span>
-                            </div>
-                        </div>
+<!-- ─── TRAIT TICKER ─── -->
+<div class="trait-ticker">
+  <div class="ticker-track" id="ticker">
+    <span>AURA</span><span class="sep">✦</span>
+    <span>BACKGROUND</span><span class="sep">✦</span>
+    <span>GRADATION I</span><span class="sep">✦</span>
+    <span>GRADATION II</span><span class="sep">✦</span>
+    <span>HIDDEN GEM</span><span class="sep">✦</span>
+    <span>PET</span><span class="sep">✦</span>
+    <span>SKIN</span><span class="sep">✦</span>
+    <span>SPECIAL</span><span class="sep">✦</span>
+    <span>10,000 ROCKS</span><span class="sep">✦</span>
+    <span>OWN THE FUTURE</span><span class="sep">✦</span>
+    <span>HOLD THE ROCK</span><span class="sep">✦</span>
+    <!-- duplicate for seamless loop -->
+    <span>AURA</span><span class="sep">✦</span>
+    <span>BACKGROUND</span><span class="sep">✦</span>
+    <span>GRADATION I</span><span class="sep">✦</span>
+    <span>GRADATION II</span><span class="sep">✦</span>
+    <span>HIDDEN GEM</span><span class="sep">✦</span>
+    <span>PET</span><span class="sep">✦</span>
+    <span>SKIN</span><span class="sep">✦</span>
+    <span>SPECIAL</span><span class="sep">✦</span>
+    <span>10,000 ROCKS</span><span class="sep">✦</span>
+    <span>OWN THE FUTURE</span><span class="sep">✦</span>
+    <span>HOLD THE ROCK</span><span class="sep">✦</span>
+  </div>
+</div>
 
-                        <div>
-                            <label class="text-xs text-zinc-400">FEATURE TOKEN ID</label>
-                            <input id="token-id-input" type="number" placeholder="e.g. 19"
-                                   class="w-full bg-black border border-white/20 px-4 py-2.5 rounded-2xl text-sm mt-1"
-                                   oninput="updateBannerPreview()">
-                        </div>
-                    </div>
-                </div>
+<!-- ─── LIVE STATS BAR ─── -->
+<div class="stats-bar" id="stats-bar">
+  <div class="stat-block">
+    <div class="stat-label">MAX SUPPLY</div>
+    <div class="stat-value" id="s-max">—</div>
+    <div class="stat-sub">Total minted</div>
+  </div>
+  <div class="stat-block">
+    <div class="stat-label">CIRCULATING</div>
+    <div class="stat-value" id="s-supply">—</div>
+    <div class="stat-sub">Live supply</div>
+  </div>
+  <div class="stat-block">
+    <div class="stat-label">🔥 BURNED</div>
+    <div class="stat-value burned" id="s-burned">—</div>
+    <div class="stat-sub">Tokens destroyed</div>
+  </div>
+  <div class="stat-block">
+    <div class="stat-label">BURN %</div>
+    <div class="stat-value burned" id="s-burnpct">—</div>
+    <div class="stat-sub">Of max supply</div>
+  </div>
+  <div class="stat-block">
+    <div class="stat-label">FLOOR PRICE</div>
+    <div class="stat-value" id="s-floor" style="font-size:20px;padding-top:4px">—</div>
+    <div class="stat-sub">ETH (OpenSea)</div>
+  </div>
+  <div class="stat-block">
+    <div class="stat-label">LAST UPDATED</div>
+    <div class="stat-value" id="s-time" style="font-size:13px;padding-top:6px">—</div>
+    <div class="stat-sub">UTC</div>
+  </div>
+</div>
 
-                <!-- Textures -->
-                <div class="bg-zinc-900 border border-white/10 rounded-3xl p-6">
-                    <h3 class="section-header text-sm tracking-widest mb-3">BACKGROUND</h3>
-                    <div class="flex flex-wrap gap-2" id="texture-buttons"></div>
-                </div>
-            </div>
+<!-- ─── MAIN GRID ─── -->
+<div class="main-grid">
 
-            <!-- Banner Preview (Bigger) -->
-            <div class="xl:col-span-8">
-                <div class="flex items-center justify-between mb-3 px-1">
-                    <div>
-                        <span class="text-sm tracking-[2px] text-zinc-400">PREVIEW</span>
-                    </div>
-                    <div class="text-xs px-3 py-1 bg-zinc-900 rounded-full">1500 × 500 PX</div>
-                </div>
-                
-                <div id="banner-preview" 
-                     class="x-banner mx-auto rounded-2xl flex items-center justify-center text-white relative overflow-hidden"
-                     style="background: #1a1a2e; max-width: 100%; box-shadow: 0 25px 50px -12px rgb(0 0 0);">
-                </div>
+  <!-- SIDEBAR -->
+  <div class="sidebar">
 
-                <div class="flex justify-center gap-4 mt-6">
-                    <button onclick="downloadBanner()"
-                            class="flex items-center gap-x-3 px-8 py-3.5 bg-[#00ff9d] hover:bg-emerald-400 transition-all text-black rounded-3xl font-bold">
-                        <i class="fa-solid fa-download"></i>
-                        <span>DOWNLOAD PNG</span>
-                    </button>
-                    
-                    <button onclick="copyPromptForAI()"
-                            class="flex items-center gap-x-3 px-6 py-3.5 border border-white/30 hover:bg-white/5 rounded-3xl text-sm">
-                        <i class="fa-solid fa-magic"></i>
-                        <span>AI PROMPT</span>
-                    </button>
-                </div>
-            </div>
-        </div>
+    <!-- WALLET -->
+    <div class="panel">
+      <div class="panel-title">WALLET</div>
+      <label>ADDRESS</label>
+      <input type="text" id="wallet-input" placeholder="0x..." autocomplete="off">
+      <div class="btn-row">
+        <button class="btn btn-green" onclick="fetchWallet()">FETCH ROCKS</button>
+        <button class="btn btn-orange" onclick="clearWallet()">CLR</button>
+      </div>
+      <div class="wallet-result" id="wallet-result">
+        <div style="font-size:10px;color:var(--muted);letter-spacing:2px;margin-bottom:4px">HOLDINGS</div>
+        <div class="big" id="wallet-count">0</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px">ROCKATERAL</div>
+      </div>
     </div>
 
-    <script>
-        const API_BASE = "https://rocks-ruby.vercel.app";
+    <!-- TOKEN ID -->
+    <div class="panel">
+      <div class="panel-title">TOKEN</div>
+      <label>FEATURE TOKEN ID (1–10000)</label>
+      <input type="number" id="token-id" placeholder="e.g. 42" min="1" max="10000" oninput="renderBanner()">
+      <label style="margin-top:4px">CUSTOM TITLE TEXT</label>
+      <input type="text" id="custom-text" placeholder="OWN THE FUTURE" oninput="renderBanner()" maxlength="28">
+    </div>
 
-        let currentStats = null;
-        let selectedTexture = "saturn";
-        let currentWallet = null;
+    <!-- PLANET SURFACE -->
+    <div class="panel">
+      <div class="panel-title">SURFACE</div>
+      <div class="planet-grid" id="planet-grid"></div>
+    </div>
 
-        const textures = [
-            { id: "moon", name: "Moon", color: "#4a4a4a" },
-            { id: "mars", name: "Mars", color: "#b85c38" },
-            { id: "earth", name: "Earth", color: "#1e3a5f" },
-            { id: "saturn", name: "Saturn", color: "#c5a26f" },
-            { id: "jupiter", name: "Jupiter", color: "#b07d3e" },
-            { id: "deep", name: "Deep Space", color: "#0a0a1f" }
-        ];
+    <!-- TRAIT SELECTOR -->
+    <div class="panel">
+      <div class="panel-title">TRAITS</div>
+      <p style="font-size:10px;color:var(--muted);letter-spacing:1px;margin-bottom:12px">Select traits to display on banner</p>
+      <div id="trait-selectors"></div>
+    </div>
 
-        async function fetchStats() {
-            try {
-                const res = await fetch(`${API_BASE}/api/rockateral/stats`);
-                const json = await res.json();
-                currentStats = json.data;
-                renderStats();
-            } catch (e) {}
+  </div><!-- /sidebar -->
+
+  <!-- BANNER PREVIEW -->
+  <div class="banner-wrap">
+    <div class="banner-meta">
+      <span class="banner-meta-label">LIVE PREVIEW — X / TWITTER HEADER</span>
+      <span class="banner-meta-size">1500 × 500 PX</span>
+    </div>
+
+    <div class="banner-outer" id="banner-outer">
+      <div class="corner tl"></div><div class="corner tr"></div>
+      <div class="corner bl"></div><div class="corner br"></div>
+      <div id="banner-canvas"></div>
+    </div>
+
+    <div class="download-area">
+      <button class="btn btn-green" onclick="downloadBanner()">⬇ DOWNLOAD PNG (1500×500)</button>
+      <button class="btn btn-blue" onclick="refreshStats()">↺ REFRESH STATS</button>
+      <button class="btn btn-orange" onclick="randomize()">🎲 RANDOMIZE</button>
+    </div>
+
+    <!-- TRAIT LEGEND -->
+    <div class="trait-legend">
+      <div class="legend-title">◈ COLLECTION TRAITS</div>
+      <div class="legend-grid" id="trait-legend"></div>
+    </div>
+
+  </div><!-- /banner-wrap -->
+
+</div><!-- /main-grid -->
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div>ROCKATERAL BANNER FORGE — BUILT FOR THE COMMUNITY</div>
+  <div>
+    <a href="https://rockateral.com" target="_blank">WEBSITE</a> &nbsp;·&nbsp;
+    <a href="https://opensea.io/collection/rockateral" target="_blank">OPENSEA</a> &nbsp;·&nbsp;
+    <a href="https://x.com/Mr_Anchovy_" target="_blank">@Mr_Anchovy_</a>
+  </div>
+  <div>CONTRACT: 0x201e...781c · ETHEREUM</div>
+</footer>
+
+</div><!-- /wrap -->
+
+<!-- ═══════════════ JS ═══════════════ -->
+<script>
+// ─── DATA ───────────────────────────────────────────────
+const API_BASE = "https://rocks-ruby.vercel.app";
+
+const PLANETS = [
+  {
+    id:"earth", name:"EARTH",
+    orb:"radial-gradient(circle at 35% 35%, #4a9e55 0%, #1e5e28 40%, #1b4d8e 65%, #0e2d55 100%)",
+    class:"surface-earth",
+    desc:"Blue-green marble"
+  },
+  {
+    id:"mars", name:"MARS",
+    orb:"radial-gradient(circle at 35% 35%, #e07050 0%, #c0543a 40%, #8b2e14 100%)",
+    class:"surface-mars",
+    desc:"Red desert world"
+  },
+  {
+    id:"moon", name:"MOON",
+    orb:"radial-gradient(circle at 35% 35%, #d8d8d8 0%, #909090 40%, #505050 100%)",
+    class:"surface-moon",
+    desc:"Cratered surface"
+  },
+  {
+    id:"saturn", name:"SATURN",
+    orb:"radial-gradient(circle at 35% 35%, #e0c07a 0%, #c8a55a 40%, #8a6030 100%)",
+    class:"surface-saturn",
+    desc:"Ringed gas giant"
+  },
+  {
+    id:"jupiter", name:"JUPITER",
+    orb:"radial-gradient(circle at 35% 35%, #d4a070 0%, #b07040 40%, #7a4020 100%)",
+    class:"surface-jupiter",
+    desc:"Storm banded giant"
+  },
+  {
+    id:"space", name:"DEEP SPACE",
+    orb:"radial-gradient(circle at 50% 50%, #200050 0%, #080015 100%)",
+    class:"surface-space",
+    desc:"Star field void"
+  }
+];
+
+const TRAITS = {
+  "AURA":        ["Cosmic", "Inferno", "Glacial", "Void", "Solar", "Thunder", "Spectral", "Crimson", "Jade", "None"],
+  "BACKGROUND":  ["Nebula", "Lava Field", "Ice Cave", "Deep Ocean", "Storm Cloud", "Aurora", "Desert", "Forest", "Space", "Abstract"],
+  "GRADATION I": ["Molten", "Arctic", "Emerald", "Twilight", "Ash", "Coral", "Cerulean", "Obsidian", "Dawn", "Void"],
+  "GRADATION II":["Gold", "Silver", "Bronze", "Platinum", "Chrome", "Copper", "Rust", "Onyx", "Pearl", "None"],
+  "HIDDEN GEM":  ["Ruby", "Sapphire", "Emerald", "Diamond", "Topaz", "None"],
+  "PET":         ["Dragon", "Phoenix", "Wolf", "Owl", "Cat", "Serpent", "Bat", "Fox", "Raven", "None", "Gecko", "Ferret", "Rabbit", "Moth", "Capybara", "Hedgehog"],
+  "SKIN":        ["Stone", "Lava", "Ice", "Mossy", "Golden", "Obsidian", "Crystal", "Marble", "Wood", "Rust"],
+  "SPECIAL":     ["Halo", "Wings", "Crown", "Chains", "Staff", "Shield", "Mask", "Cloak", "Tome", "Axe",
+                  "None", "Wand", "Lantern", "Scythe", "Mirror", "Vial", "Gauntlet", "Compass", "Key", "Codex", "Orb", "Rune"]
+};
+
+// State
+let state = {
+  planet: "earth",
+  traits: {},
+  tokenId: "",
+  customText: "",
+  walletAddr: "",
+  walletCount: null,
+  stats: null
+};
+
+// ─── INIT ────────────────────────────────────────────────
+function init() {
+  buildPlanetGrid();
+  buildTraitSelectors();
+  buildTraitLegend();
+  renderBanner();
+  fetchStats();
+}
+
+// ─── PLANET GRID ─────────────────────────────────────────
+function buildPlanetGrid() {
+  const grid = document.getElementById('planet-grid');
+  grid.innerHTML = '';
+  PLANETS.forEach(p => {
+    const btn = document.createElement('button');
+    btn.className = 'planet-btn' + (p.id === state.planet ? ' active' : '');
+    btn.innerHTML = `
+      <span class="planet-orb" style="background:${p.orb}"></span>
+      <span class="planet-name">${p.name}</span>
+    `;
+    btn.onclick = () => {
+      state.planet = p.id;
+      document.querySelectorAll('.planet-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderBanner();
+    };
+    grid.appendChild(btn);
+  });
+}
+
+// ─── TRAIT SELECTORS ─────────────────────────────────────
+function buildTraitSelectors() {
+  const con = document.getElementById('trait-selectors');
+  con.innerHTML = '';
+  Object.entries(TRAITS).forEach(([cat, vals]) => {
+    const sec = document.createElement('div');
+    sec.className = 'trait-section';
+    sec.innerHTML = `<div class="trait-section-name">${cat}</div><div class="trait-chips" data-cat="${cat}"></div>`;
+    const chips = sec.querySelector('.trait-chips');
+    vals.forEach(v => {
+      const chip = document.createElement('span');
+      chip.className = 'trait-chip';
+      chip.textContent = v;
+      chip.onclick = () => {
+        const active = chips.querySelector('.trait-chip.active');
+        if (active === chip) { chip.classList.remove('active'); delete state.traits[cat]; }
+        else {
+          chips.querySelectorAll('.trait-chip').forEach(c => c.classList.remove('active'));
+          chip.classList.add('active');
+          state.traits[cat] = v;
         }
+        renderBanner();
+      };
+      chips.appendChild(chip);
+    });
+    con.appendChild(sec);
+  });
+}
 
-        function renderStats() {
-            const grid = document.getElementById('stats-grid');
-            if (!currentStats) return;
+// ─── TRAIT LEGEND ────────────────────────────────────────
+function buildTraitLegend() {
+  const grid = document.getElementById('trait-legend');
+  grid.innerHTML = '';
+  const counts = { "AURA":9,"BACKGROUND":9,"GRADATION I":10,"GRADATION II":9,"HIDDEN GEM":5,"PET":16,"SKIN":10,"SPECIAL":22 };
+  Object.entries(TRAITS).forEach(([cat, vals]) => {
+    const card = document.createElement('div');
+    card.className = 'legend-card';
+    card.innerHTML = `
+      <div class="legend-card-name">${cat} <span style="color:var(--plasma-blue)">(${counts[cat] || vals.length})</span></div>
+      <div class="legend-card-values">${vals.slice(0,6).join(' · ')}${vals.length>6?'…':''}</div>
+    `;
+    grid.appendChild(card);
+  });
+}
 
-            grid.innerHTML = `
-                <div class="stat-pill p-4 rounded-2xl">
-                    <div class="text-[10px] text-zinc-400">MAX SUPPLY</div>
-                    <div class="text-4xl font-black">${currentStats.max_supply}</div>
-                </div>
-                <div class="stat-pill p-4 rounded-2xl border-orange-500">
-                    <div class="text-[10px] text-orange-400">BURNED</div>
-                    <div class="text-4xl font-black text-orange-400">${currentStats.burned}</div>
-                </div>
-            `;
-        }
+// ─── BANNER RENDER ───────────────────────────────────────
+function getPlanetBg(id) {
+  const map = {
+    earth: `radial-gradient(ellipse at 25% 50%, #1b4d8e 0%, #0e2d55 50%, #051525 100%)`,
+    mars:  `radial-gradient(ellipse at 65% 40%, #c0543a 0%, #8b2e14 55%, #400800 100%)`,
+    moon:  `radial-gradient(ellipse at 40% 40%, #b0b0b0 0%, #606060 55%, #202020 100%)`,
+    saturn:`linear-gradient(155deg, #c8a55a 0%, #a87d38 25%, #7a5520 55%, #3a2008 100%)`,
+    jupiter:`linear-gradient(175deg,#c8865a,#b07040,#d4a070,#8a5030,#c07050,#9a6040,#d4a060,#b08050)`,
+    space: `radial-gradient(ellipse at 20% 80%, #0d0025 0%, #030010 100%)`
+  };
+  return map[id] || map.earth;
+}
 
-        async function fetchWalletHoldings() {
-            const wallet = document.getElementById('wallet-input').value.trim();
-            if (!wallet) return;
+function getPlanetOverlay(id) {
+  if (id === 'earth') return `
+    <div style="position:absolute;width:42%;height:52%;top:8%;left:4%;border-radius:70% 30% 60% 40%/50% 60% 40% 50%;background:linear-gradient(135deg,#2d7a3a,#1e5e28,#4a9e55);opacity:0.65;"></div>
+    <div style="position:absolute;width:22%;height:28%;top:52%;left:62%;border-radius:40% 60% 70% 30%/60% 40% 50% 50%;background:linear-gradient(135deg,#3d9e4a,#2a6e33);opacity:0.6;"></div>
+    <div style="position:absolute;width:60%;height:18%;top:15%;left:20%;border-radius:50%;background:rgba(255,255,255,0.06);filter:blur(12px);"></div>
+    <div style="position:absolute;width:35%;height:12%;top:65%;left:5%;border-radius:50%;background:rgba(255,255,255,0.05);filter:blur(10px);"></div>
+  `;
+  if (id === 'mars') return `
+    <div style="position:absolute;width:18%;height:30%;top:10%;left:12%;border-radius:50%;background:radial-gradient(circle at 35% 35%,rgba(255,150,100,0.15),rgba(80,13,0,0.5));border:1px solid rgba(255,100,60,0.15);"></div>
+    <div style="position:absolute;width:10%;height:16%;top:55%;left:60%;border-radius:50%;background:radial-gradient(circle at 35% 35%,rgba(255,130,80,0.12),rgba(80,13,0,0.4));border:1px solid rgba(255,80,40,0.12);"></div>
+    <div style="position:absolute;width:26%;height:8%;top:40%;left:30%;background:rgba(180,60,20,0.25);filter:blur(6px);border-radius:4px;"></div>
+  `;
+  if (id === 'moon') return `
+    <div style="position:absolute;width:20%;height:33%;top:15%;left:20%;border-radius:50%;background:radial-gradient(circle at 40% 40%,rgba(220,220,220,0.08),rgba(0,0,0,0.45));border:1px solid rgba(255,255,255,0.06);"></div>
+    <div style="position:absolute;width:12%;height:20%;top:60%;left:65%;border-radius:50%;background:radial-gradient(circle at 40% 40%,rgba(210,210,210,0.06),rgba(0,0,0,0.4));border:1px solid rgba(255,255,255,0.05);"></div>
+    <div style="position:absolute;width:8%;height:13%;top:30%;left:75%;border-radius:50%;background:radial-gradient(circle at 40% 40%,rgba(200,200,200,0.07),rgba(0,0,0,0.35));border:1px solid rgba(255,255,255,0.04);"></div>
+  `;
+  if (id === 'saturn') return `
+    <div style="position:absolute;width:80%;height:6%;top:38%;left:10%;border-radius:50%;border:3px solid rgba(200,165,90,0.2);transform:rotateX(70deg);"></div>
+    <div style="position:absolute;width:90%;height:5%;top:44%;left:5%;border-radius:50%;border:2px solid rgba(220,190,120,0.15);transform:rotateX(70deg);"></div>
+    <div style="position:absolute;width:55%;height:18%;top:20%;left:22%;border-radius:50%;background:linear-gradient(90deg,rgba(255,210,130,0.08),rgba(200,150,70,0.12),rgba(255,210,130,0.08));"></div>
+  `;
+  if (id === 'jupiter') return `
+    <div style="position:absolute;width:100%;height:14%;top:18%;background:rgba(200,120,70,0.25);"></div>
+    <div style="position:absolute;width:100%;height:10%;top:44%;background:rgba(160,80,30,0.3);"></div>
+    <div style="position:absolute;width:100%;height:8%;top:70%;background:rgba(200,130,60,0.2);"></div>
+    <div style="position:absolute;width:16%;height:26%;top:35%;left:60%;border-radius:50%;background:radial-gradient(circle,rgba(200,100,60,0.4),transparent 70%);"></div>
+  `;
+  if (id === 'space') return `
+    ${Array.from({length:60},(_,i)=>{
+      const x=Math.random()*100,y=Math.random()*100,s=Math.random()*2+0.5,op=Math.random()*0.8+0.2;
+      return `<div style="position:absolute;width:${s}px;height:${s}px;top:${y}%;left:${x}%;border-radius:50%;background:#fff;opacity:${op};"></div>`;
+    }).join('')}
+    <div style="position:absolute;width:40%;height:40%;top:20%;left:30%;border-radius:50%;background:radial-gradient(circle,rgba(80,0,160,0.15),transparent 70%);filter:blur(20px);"></div>
+    <div style="position:absolute;width:25%;height:25%;top:50%;left:10%;border-radius:50%;background:radial-gradient(circle,rgba(0,80,160,0.12),transparent 70%);filter:blur(15px);"></div>
+  `;
+  return '';
+}
 
-            try {
-                const res = await fetch(`${API_BASE}/api/rockateral/wallet/${wallet}`);
-                const data = await res.json();
-                if (data.success) {
-                    document.getElementById('wallet-info').classList.remove('hidden');
-                    document.getElementById('wallet-balance').innerText = data.rockateral_balance;
-                    currentWallet = wallet;
-                    updateBannerPreview();
-                }
-            } catch (e) {}
-        }
+function renderBanner() {
+  const canvas = document.getElementById('banner-canvas');
+  const tokenId = document.getElementById('token-id').value;
+  const customText = document.getElementById('custom-text').value || 'OWN THE FUTURE · HOLD THE ROCK';
+  const planet = PLANETS.find(p => p.id === state.planet);
+  const bg = getPlanetBg(state.planet);
+  const overlay = getPlanetOverlay(state.planet);
 
-        function createTextureButtons() {
-            const container = document.getElementById('texture-buttons');
-            container.innerHTML = '';
-            textures.forEach(tex => {
-                const btn = document.createElement('button');
-                btn.className = `texture-btn px-4 py-1.5 text-xs rounded-2xl border border-white/20`;
-                btn.innerText = tex.name;
-                btn.onclick = () => {
-                    selectedTexture = tex.id;
-                    document.querySelectorAll('.texture-btn').forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    updateBannerPreview();
-                };
-                container.appendChild(btn);
-            });
-        }
+  const selectedTraits = Object.entries(state.traits).filter(([,v]) => v !== 'None');
+  const traitPills = selectedTraits.map(([k,v]) =>
+    `<span class="ban-trait-pill">${k}: ${v}</span>`
+  ).join('');
 
-        function updateBannerPreview() {
-            const banner = document.getElementById('banner-preview');
-            const tokenId = document.getElementById('token-id-input').value;
-            const walletShort = currentWallet ? currentWallet.slice(0,6) + '...' + currentWallet.slice(-4) : '';
+  const statsHtml = state.stats ? `
+    <div class="ban-stat-row">MAX <span>${state.stats.max_supply?.toLocaleString()}</span></div>
+    <div class="ban-stat-row">SUPPLY <span>${state.stats.total_supply?.toLocaleString()}</span></div>
+    <div class="ban-stat-row">BURNED <span style="color:var(--lava-orange)">${state.stats.burned?.toLocaleString()}</span></div>
+  ` : `<div class="ban-stat-row">ROCKATERAL.COM</div>`;
 
-            let bgColor = "#1a1a2e";
-            textures.forEach(t => { if (t.id === selectedTexture) bgColor = t.color; });
+  const walletLine = state.walletAddr
+    ? `<div class="ban-wallet">${state.walletAddr.slice(0,6)}...${state.walletAddr.slice(-4)} · ${state.walletCount ?? '?'} ROCKS</div>`
+    : '';
 
-            banner.style.background = bgColor;
+  canvas.innerHTML = `
+    <div style="position:relative;width:100%;height:100%;overflow:hidden">
+      <!-- BG -->
+      <div style="position:absolute;inset:0;background:${bg}"></div>
+      <!-- SURFACE OVERLAY -->
+      <div style="position:absolute;inset:0">${overlay}</div>
+      <!-- SCANLINES -->
+      <div style="position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.1) 3px,rgba(0,0,0,0.1) 6px);pointer-events:none"></div>
+      <!-- GRID -->
+      <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(57,255,20,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(57,255,20,0.04) 1px,transparent 1px);background-size:50px 50px;pointer-events:none"></div>
+      <!-- CORNER BRACKETS -->
+      <div style="position:absolute;top:12px;left:12px;width:20px;height:20px;border-top:2px solid rgba(57,255,20,0.8);border-left:2px solid rgba(57,255,20,0.8)"></div>
+      <div style="position:absolute;top:12px;right:12px;width:20px;height:20px;border-top:2px solid rgba(57,255,20,0.8);border-right:2px solid rgba(57,255,20,0.8)"></div>
+      <div style="position:absolute;bottom:12px;left:12px;width:20px;height:20px;border-bottom:2px solid rgba(57,255,20,0.8);border-left:2px solid rgba(57,255,20,0.8)"></div>
+      <div style="position:absolute;bottom:12px;right:12px;width:20px;height:20px;border-bottom:2px solid rgba(57,255,20,0.8);border-right:2px solid rgba(57,255,20,0.8)"></div>
+      <!-- NEON LINE -->
+      <div style="position:absolute;top:50%;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(57,255,20,0.15),transparent)"></div>
+      <!-- CONTENT -->
+      <div style="position:absolute;inset:0;display:flex;flex-direction:column;justify-content:space-between;padding:clamp(12px,2.5%,28px) clamp(16px,3%,40px)">
+        <!-- TOP ROW -->
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div>
+            <div style="font-family:'Unbounded',sans-serif;font-weight:900;font-size:clamp(18px,4vw,50px);letter-spacing:-1px;line-height:1;color:#fff;text-shadow:0 0 30px rgba(57,255,20,0.5)">ROCKATERAL</div>
+            ${tokenId ? `<div style="font-family:'VT323',monospace;font-size:clamp(13px,2.2vw,26px);color:#f5f500;letter-spacing:3px;margin-top:4px"># ${tokenId}</div>` : ''}
+          </div>
+          <div style="text-align:right;font-family:'Share Tech Mono',monospace">
+            ${statsHtml}
+            ${walletLine}
+          </div>
+        </div>
 
-            banner.innerHTML = `
-                <div class="w-full h-full flex flex-col justify-between p-10 relative">
-                    <div>
-                        <div class="text-[72px] font-black tracking-[-4px] leading-none">ROCKATERAL</div>
-                        ${tokenId ? `<div class="text-4xl mt-2">#${tokenId}</div>` : ''}
-                    </div>
-                    
-                    <div class="flex justify-between items-end">
-                        <div class="text-sm opacity-70">
-                            ${walletShort ? walletShort : 'PIXEL ROCKS ON ETHEREUM'}
-                        </div>
-                        <div class="text-right">
-                            <div class="text-xs opacity-60">CYBERPUNK • 2026</div>
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
+        <!-- NEON BAR -->
+        <div style="height:2px;background:linear-gradient(90deg,transparent,rgba(57,255,20,0.6),rgba(0,212,255,0.4),rgba(57,255,20,0.6),transparent)"></div>
 
-        async function downloadBanner() {
-            const banner = document.getElementById('banner-preview');
-            const canvas = await html2canvas(banner, { scale: 1.5 });
-            const link = document.createElement('a');
-            link.download = `rockateral-x-banner.png`;
-            link.href = canvas.toDataURL();
-            link.click();
-        }
+        <!-- BOTTOM ROW -->
+        <div style="display:flex;justify-content:space-between;align-items:flex-end">
+          <div>
+            ${selectedTraits.length > 0 ? `<div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px">${traitPills}</div>` : ''}
+            <div style="font-family:'VT323',monospace;font-size:clamp(11px,1.8vw,20px);color:rgba(255,255,255,0.5);letter-spacing:3px">${customText.toUpperCase()}</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-family:'VT323',monospace;font-size:clamp(10px,1.4vw,16px);color:var(--lava-orange,#ff6b00);letter-spacing:2px;opacity:0.9">${planet.name}</div>
+            <div style="font-family:'Share Tech Mono',monospace;font-size:clamp(7px,0.9vw,10px);color:rgba(255,255,255,0.3);letter-spacing:2px;margin-top:2px">ETHEREUM · PIXEL ROCKS</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
 
-        function copyPromptForAI() {
-            alert("Coming soon!");
-        }
+// ─── STATS ───────────────────────────────────────────────
+async function fetchStats() {
+  try {
+    const res = await fetch(`${API_BASE}/api/rockateral/stats`);
+    const json = await res.json();
+    if (!json.success) return;
+    state.stats = json.data;
+    document.getElementById('s-max').textContent = json.data.max_supply?.toLocaleString() || '—';
+    document.getElementById('s-supply').textContent = json.data.total_supply?.toLocaleString() || '—';
+    document.getElementById('s-burned').textContent = json.data.burned?.toLocaleString() || '—';
+    document.getElementById('s-burnpct').textContent = (json.data.burned_percentage ?? '—') + '%';
+    document.getElementById('s-floor').textContent = json.data.floor_price_eth ? json.data.floor_price_eth + ' ETH' : '—';
+    const t = new Date(json.data.last_updated);
+    document.getElementById('s-time').textContent = t.toTimeString().slice(0,5);
+    renderBanner();
+  } catch(e) {
+    console.warn('Stats fetch failed', e);
+  }
+}
 
-        function init() {
-            fetchStats();
-            createTextureButtons();
-            updateBannerPreview();
+function refreshStats() { fetchStats(); }
 
-            setTimeout(() => {
-                const saturnBtn = Array.from(document.querySelectorAll('.texture-btn')).find(b => b.innerText === 'Saturn');
-                if (saturnBtn) saturnBtn.classList.add('active');
-            }, 400);
+// ─── WALLET ──────────────────────────────────────────────
+async function fetchWallet() {
+  const addr = document.getElementById('wallet-input').value.trim();
+  if (!addr) return;
+  try {
+    const res = await fetch(`${API_BASE}/api/rockateral/wallet/${addr}`);
+    const data = await res.json();
+    if (data.success) {
+      state.walletAddr = addr;
+      state.walletCount = data.rockateral_balance;
+      document.getElementById('wallet-count').textContent = data.rockateral_balance;
+      document.getElementById('wallet-result').classList.add('show');
+      renderBanner();
+    }
+  } catch(e) { alert('Could not fetch wallet. Check address.'); }
+}
 
-            document.getElementById('token-id-input').addEventListener('input', updateBannerPreview);
-        }
+function clearWallet() {
+  state.walletAddr = '';
+  state.walletCount = null;
+  document.getElementById('wallet-input').value = '';
+  document.getElementById('wallet-result').classList.remove('show');
+  renderBanner();
+}
 
-        window.onload = init;
-    </script>
+// ─── DOWNLOAD ────────────────────────────────────────────
+async function downloadBanner() {
+  const el = document.getElementById('banner-canvas');
+
+  // Store original size
+  const origW = el.style.width, origH = el.style.height;
+  el.style.width = '1500px';
+  el.style.height = '500px';
+  el.style.position = 'fixed';
+  el.style.top = '-9999px';
+  el.style.left = '-9999px';
+  document.body.appendChild(el);
+
+  try {
+    const canvas = await html2canvas(el, {
+      width: 1500, height: 500, scale: 1,
+      useCORS: true, allowTaint: true,
+      backgroundColor: null
+    });
+    const link = document.createElement('a');
+    link.download = `rockateral-banner-${state.planet}${state.tokenId ? '-'+state.tokenId : ''}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  } finally {
+    el.style.width = origW; el.style.height = origH;
+    el.style.position = '';
+    el.style.top = ''; el.style.left = '';
+    document.getElementById('banner-canvas').replaceWith(el);
+    renderBanner();
+  }
+}
+
+// ─── RANDOMIZE ───────────────────────────────────────────
+function randomize() {
+  // Random planet
+  state.planet = PLANETS[Math.floor(Math.random()*PLANETS.length)].id;
+  document.querySelectorAll('.planet-btn').forEach((btn, i) => {
+    btn.classList.toggle('active', PLANETS[i].id === state.planet);
+  });
+
+  // Random token
+  const tok = Math.floor(Math.random()*10000)+1;
+  document.getElementById('token-id').value = tok;
+
+  // Random 2-3 traits
+  state.traits = {};
+  const cats = Object.keys(TRAITS);
+  const pick = cats.sort(()=>Math.random()-0.5).slice(0,3);
+  pick.forEach(cat => {
+    const opts = TRAITS[cat].filter(v=>v!=='None');
+    state.traits[cat] = opts[Math.floor(Math.random()*opts.length)];
+  });
+
+  // Update chip UI
+  document.querySelectorAll('.trait-chips').forEach(chips => {
+    const cat = chips.dataset.cat;
+    chips.querySelectorAll('.trait-chip').forEach(chip => {
+      chip.classList.toggle('active', state.traits[cat] === chip.textContent);
+    });
+  });
+
+  renderBanner();
+}
+
+// ─── BOOT ────────────────────────────────────────────────
+window.onload = init;
+</script>
 </body>
 </html>
